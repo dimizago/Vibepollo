@@ -1,0 +1,93 @@
+name: PyroWave feedback
+description: A problem, a result or a question about the PyroWave builds (Moonlight PyroWave for Xbox + Vibepollo PyroWave).
+title: "[PyroWave] "
+labels: ["pyrowave"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        These builds are an experimental personal project, not an official release. Please report PyroWave problems here, **not** to the upstream Moonlight, Sunshine, Apollo or Vibepollo maintainers.
+        Downloads and requirements: [Xbox app](https://github.com/dimizago/moonlight-xbox/releases) · [Vibepollo host](https://github.com/dimizago/Vibepollo/releases)
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is this about?
+      options:
+        - Something doesn't work
+        - Performance or latency
+        - Image quality
+        - It works, sharing my results
+        - Question
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what you got instead.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: console
+    attributes:
+      label: Console
+      options:
+        - Xbox Series X
+        - Xbox Series S
+    validations:
+      required: true
+
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Release tags of both builds.
+      placeholder: "Xbox v1.18.1-pyrowave.1, Vibepollo v1.18.4-pyrowave.1"
+    validations:
+      required: true
+
+  - type: input
+    id: gpu
+    attributes:
+      label: Host GPU and driver
+      placeholder: "RX 7900 XT, Adrenalin 26.6.2"
+    validations:
+      required: true
+
+  - type: input
+    id: stream
+    attributes:
+      label: Stream settings
+      description: Codec (PyroWave 4:2:0 or 4:4:4), resolution, FPS, bitrate, HDR on or off.
+      placeholder: "PyroWave 4:4:4, 3840x2160, 60 FPS, 500000 Kbps, HDR on"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: network
+    attributes:
+      label: Network between host and Xbox
+      options:
+        - Wired, 1 Gbps
+        - Wired, 2.5 Gbps or faster
+        - Wi-Fi somewhere in the path
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: stats
+    attributes:
+      label: Stats
+      description: |
+        A photo of the performance stats overlay, or the stream stats log. To get the log, enable **Log stream stats** in the app's host settings, then download `LocalState\stream_stats_<time>.log` with Device Portal's file explorer. Drag files in here.
+
+  - type: textarea
+    id: host-log
+    attributes:
+      label: Host log
+      description: The relevant part of the Vibepollo log (web UI > Troubleshooting), especially lines mentioning PyroWave.
+      render: text
