@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Not about PyroWave?
+    url: https://github.com/Nonary/Vibepollo/issues
+    about: Problems that also happen without PyroWave belong to the original project.
