@@ -41,6 +41,7 @@ on:
         required: false
         type: boolean
         default: false
+      # Empty: no private symbols for this build, even for a tag (forks).
       symbol_release_repo:
         required: false
         type: string
@@ -501,7 +502,7 @@ jobs:
           ./build/native-amf-lifecycle-test.exe
 
       - name: Install cv2pdb
-        if: startsWith(github.ref, 'refs/tags/') || inputs.publish_symbols || inputs.upload_symbols_artifact
+        if: (startsWith(github.ref, 'refs/tags/') && inputs.symbol_release_repo != '') || inputs.publish_symbols || inputs.upload_symbols_artifact
         shell: pwsh
         env:
           CV2PDB_VERSION: "0.54"
@@ -520,7 +521,7 @@ jobs:
           Add-Content -Path $env:GITHUB_PATH -Value (Split-Path $cv2pdbExe.FullName -Parent)
 
       - name: Generate Windows PDB
-        if: startsWith(github.ref, 'refs/tags/') || inputs.publish_symbols || inputs.upload_symbols_artifact
+        if: (startsWith(github.ref, 'refs/tags/') && inputs.symbol_release_repo != '') || inputs.publish_symbols || inputs.upload_symbols_artifact
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -548,7 +549,7 @@ jobs:
           }
 
       - name: Package Windows Symbols
-        if: startsWith(github.ref, 'refs/tags/') || inputs.publish_symbols || inputs.upload_symbols_artifact
+        if: (startsWith(github.ref, 'refs/tags/') && inputs.symbol_release_repo != '') || inputs.publish_symbols || inputs.upload_symbols_artifact
         id: package-windows-symbols
         shell: pwsh
         env:
@@ -691,7 +692,7 @@ jobs:
           overwrite: true
 
       - name: Upload Windows symbols package
-        if: startsWith(github.ref, 'refs/tags/') || inputs.publish_symbols || inputs.upload_symbols_artifact
+        if: (startsWith(github.ref, 'refs/tags/') && inputs.symbol_release_repo != '') || inputs.publish_symbols || inputs.upload_symbols_artifact
         id: upload-windows-symbols
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
@@ -1109,7 +1110,7 @@ jobs:
           path: signed-msi
 
       - name: Download symbols package
-        if: startsWith(github.ref, 'refs/tags/') || inputs.publish_symbols || inputs.upload_symbols_artifact
+        if: (startsWith(github.ref, 'refs/tags/') && inputs.symbol_release_repo != '') || inputs.publish_symbols || inputs.upload_symbols_artifact
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131  # v7.0.0
         with:
           artifact-ids: ${{ needs.release_artifacts.outputs.symbols_artifact_id }}
@@ -1293,8 +1294,7 @@ jobs:
           overwrite: true
 
       - name: Publish private symbols release
-        # Forks without a symbols repository pass an empty symbol_release_repo.
-        if: (startsWith(github.ref, 'refs/tags/') || inputs.publish_symbols) && inputs.symbol_release_repo != ''
+        if: (startsWith(github.ref, 'refs/tags/') && inputs.symbol_release_repo != '') || inputs.publish_symbols
         shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.symbol_token }}
