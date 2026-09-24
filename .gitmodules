@@ -71,8 +71,8 @@
 	branch = master
 [submodule "third-party/moonlight-common-c"]
 	path = third-party/moonlight-common-c
-	url = https://github.com/moonlight-stream/moonlight-common-c.git
-	branch = master
+	url = https://github.com/dimizago/moonlight-common-c.git
+	branch = vibepollo-pyrowave
 [submodule "third-party/tray"]
 	path = third-party/tray
 	url = https://github.com/Nonary/tray
@@ -88,3 +88,7 @@
 	path = third-party/libvirtualdisplay
 	url = https://github.com/Nonary/libvirtualdisplay.git
 	branch = master
+[submodule "third-party/pyrowave"]
+	path = third-party/pyrowave
+	url = ../pyrowave.git
+	branch = d3d12

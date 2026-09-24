@@ -41,7 +41,7 @@ namespace video {
        SDR encoding colorspace (encoderCscMode >> 1) : 0 - BT.601, 1 - BT.709, 2 - BT.2020 */
     int encoderCscMode;
 
-    int videoFormat;  // 0 - H.264, 1 - HEVC, 2 - AV1
+    int videoFormat;  // 0 - H.264, 1 - HEVC, 2 - AV1, 3 - PyroWave
 
     /* Encoding color depth (bit depth): 0 - 8-bit, 1 - 10-bit
        HDR encoding activates when color depth is higher than 8-bit and the display which is being captured is operating in HDR mode */
@@ -338,6 +338,9 @@ namespace video {
     std::optional<std::chrono::steady_clock::time_point> capture_timestamp;
     std::optional<std::chrono::steady_clock::time_point> host_processing_timestamp;
     std::chrono::steady_clock::time_point packet_enqueue_timestamp = std::chrono::steady_clock::now();
+    // PyroWave: bytes at the start of the frame that carry the loss-critical coarse
+    // wavelet levels. When nonzero, FEC protects only this head (see stream.cpp).
+    std::size_t fec_head_bytes = 0;
   };
 
   struct packet_raw_avcodec: packet_raw_t {
@@ -414,6 +417,11 @@ namespace video {
 
   extern int active_hevc_mode;
   extern int active_av1_mode;
+
+  /**
+   * @brief PyroWave mode: 0 when disabled or unsupported by the GPU, 2 when advertised.
+   */
+  int pyrowave_mode();
   extern bool last_encoder_probe_supported_ref_frames_invalidation;
   extern std::array<bool, 3> last_encoder_probe_supported_yuv444_for_codec;  // 0 - H.264, 1 - HEVC, 2 - AV1
 

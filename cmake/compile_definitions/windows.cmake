@@ -307,3 +307,19 @@ if(SUNSHINE_ENABLE_TRAY)
     list(APPEND PLATFORM_TARGET_FILES
             "${CMAKE_SOURCE_DIR}/third-party/tray/src/tray_windows.c")
 endif()
+
+# PyroWave: the Direct3D 12 backend of the PyroWave codec, built from the submodule's
+# d3d12/ directory (no Granite or Vulkan needed; its shaders are precompiled DXIL).
+if(SUNSHINE_ENABLE_PYROWAVE)
+    if(NOT EXISTS "${CMAKE_SOURCE_DIR}/third-party/pyrowave/d3d12/CMakeLists.txt")
+        message(FATAL_ERROR "SUNSHINE_ENABLE_PYROWAVE is ON but third-party/pyrowave is missing. "
+                "Run: git submodule update --init third-party/pyrowave")
+    endif()
+    add_subdirectory("${CMAKE_SOURCE_DIR}/third-party/pyrowave/d3d12"
+            "${CMAKE_BINARY_DIR}/third-party/pyrowave-d3d12" EXCLUDE_FROM_ALL)
+    list(APPEND SUNSHINE_DEFINITIONS SUNSHINE_ENABLE_PYROWAVE=1)
+    list(APPEND PLATFORM_LIBRARIES pyrowave-d3d12)
+    list(APPEND PLATFORM_TARGET_FILES
+            "${CMAKE_SOURCE_DIR}/src/platform/windows/pyrowave_encode.h"
+            "${CMAKE_SOURCE_DIR}/src/platform/windows/pyrowave_encode.cpp")
+endif()

@@ -98,6 +98,7 @@ export const clientOverrideableKeys = new Set([
   'min_threads',
   'hevc_mode',
   'av1_mode',
+  'pyrowave_mode',
   'capture',
   'encoder',
   'frame_limiter_enable',
@@ -661,6 +662,10 @@ export const settingsCategories: SettingsCategory[] = [
             option('2', 'ui.settings.options.codec.eight_bit'),
             option('3', 'ui.settings.options.codec.hdr_ten_bit'),
           ]),
+          select('pyrowave_mode', [
+            option('0', '_common.disabled'),
+            option('2', '_common.enabled'),
+          ]),
         ],
       },
       {
@@ -852,6 +857,7 @@ export const settingsDefaults: Record<string, unknown> = {
   wgc_pacing_smoothing: true,
   hevc_mode: 0,
   av1_mode: 0,
+  pyrowave_mode: 0,
   max_bitrate: 0,
   minimum_fps_target: 20,
   qp: 28,

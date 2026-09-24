@@ -63,6 +63,7 @@ namespace config {
 
     int hevc_mode;
     int av1_mode;
+    int pyrowave_mode;  // PyroWave (Windows, Direct3D 12): 0 - disabled, 2 - advertised
 
     int min_threads;  // Minimum number of threads/slices for CPU encoding
 

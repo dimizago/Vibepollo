@@ -485,6 +485,8 @@
     "av1_mode_2": "Vibepollo will advertise support for AV1 Main 8-bit profile",
     "av1_mode_3": "Vibepollo will advertise support for AV1 Main 8-bit and 10-bit (HDR) profiles",
     "av1_mode_desc": "Allows the client to request AV1 Main 8-bit or 10-bit video streams. AV1 is more CPU-intensive to encode, so enabling this may reduce performance when using software encoding.",
+    "pyrowave_mode": "PyroWave Support",
+    "pyrowave_mode_desc": "Advertises PyroWave, an intra-only GPU wavelet codec with sub-millisecond encode and decode for very low latency LAN streaming at high bitrates (hundreds of Mbps). Only clients that support it (e.g. Moonlight for Xbox with PyroWave) will use it, and only when they select it. Needs a Direct3D 12 GPU with Shader Model 6.6.",
     "prefer_10bit_sdr": "10-bit SDR instead of HDR",
     "prefer_10bit_sdr_label": "Stream this client's HDR requests as 10-bit SDR",
     "prefer_10bit_sdr_desc": "When this client asks for HDR, leave the display in SDR and send a 10-bit SDR stream instead. The extra bit depth reduces banding without switching your display or TV into HDR. Requires HEVC or AV1 Main10; H.264 sessions stay 8-bit. Clients that request SDR are unaffected — they are never upgraded to 10-bit, because they negotiate an 8-bit decoder.",
