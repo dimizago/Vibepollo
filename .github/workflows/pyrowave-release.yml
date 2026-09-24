@@ -1,22 +1,17 @@
 ---
-# Builds the unsigned Windows installer for a v*-pyrowave.* tag with the
+# A pushed v*-pyrowave.* tag builds the unsigned Windows installer with the
 # regular Windows pipeline and publishes it as a GitHub release, using
 # release_notes/<tag>.md from the tagged commit as the description.
-# Run it by hand from the branch; a tag push would put ci-windows.yml on its
-# upstream symbol publishing path.
 name: PyroWave release
 permissions: {}
 
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: Tag to build and publish, for example v1.18.4-pyrowave.1
-        required: true
-        type: string
+  push:
+    tags:
+      - 'v*-pyrowave.*'
 
 concurrency:
-  group: "${{ github.workflow }}-${{ inputs.tag }}"
+  group: "${{ github.workflow }}-${{ github.ref }}"
   cancel-in-progress: true
 
 jobs:
@@ -31,13 +26,11 @@ jobs:
     steps:
       - name: Checkout tag
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
-        with:
-          ref: refs/tags/${{ inputs.tag }}
 
       - name: Resolve tag
         id: resolve
         env:
-          TAG: ${{ inputs.tag }}
+          TAG: ${{ github.ref_name }}
         run: |
           set -euo pipefail
           if [[ ! "${TAG}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-pyrowave\.[0-9]+$ ]]; then
@@ -61,11 +54,13 @@ jobs:
     with:
       release_commit: ${{ needs.resolve.outputs.commit }}
       release_version: ${{ needs.resolve.outputs.version }}
-      release_tag: ${{ inputs.tag }}
+      release_tag: ${{ github.ref_name }}
       build_tests: false
       release_artifact_retention_days: 7
       symbol_product_name: Vibepollo
       symbol_release_prefix: polo
+      # No private symbols repository for this fork.
+      symbol_release_repo: ''
       publish_symbols: false
       require_truehdr_runtime: false
 
@@ -80,8 +75,6 @@ jobs:
     steps:
       - name: Checkout tag
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
-        with:
-          ref: refs/tags/${{ inputs.tag }}
 
       - name: Download installer
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131  # v7.0.0
@@ -92,7 +85,7 @@ jobs:
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ inputs.tag }}
+          TAG: ${{ github.ref_name }}
           VERSION: ${{ needs.resolve.outputs.version }}
         run: |
           set -euo pipefail
