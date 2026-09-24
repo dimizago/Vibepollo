@@ -13,6 +13,7 @@
   #include <string>
 
   // platform includes
+  #include <winsock2.h>  // before windows.h, which the D3D headers pull in
   #include <d3d11_4.h>
   #include <d3d12.h>
   #include <d3dcompiler.h>
