@@ -180,6 +180,8 @@ namespace platf::pyrowave {
 
     // Smoothed interval between newly captured frames, in seconds.
     double capture_interval = 0.0;
+    // Budget last reported in the debug log, which only hears about changes over 10%.
+    std::size_t logged_budget = 0;
     std::optional<std::chrono::steady_clock::time_point> last_capture;
 
     void set_bitrate(int kbps) {
@@ -671,10 +673,13 @@ namespace platf::pyrowave {
   }
 
   void encoder_t::on_new_capture(std::chrono::steady_clock::time_point when) {
-    const std::size_t before = impl->max_bitstream;
     impl->on_new_capture(when);
-    if (impl->max_bitstream != before) {
-      BOOST_LOG(debug) << "PyroWave: capture rate "sv << 1.0 / impl->capture_interval << " fps, budget "sv << impl->max_bitstream << " bytes/frame"sv;
+    // The smoothed rate moves a little on every frame; only log real changes.
+    const std::size_t budget = impl->max_bitstream;
+    const std::size_t logged = impl->logged_budget;
+    if (logged == 0 || budget * 10 > logged * 11 || budget * 11 < logged * 10) {
+      impl->logged_budget = budget;
+      BOOST_LOG(debug) << "PyroWave: capture rate "sv << 1.0 / impl->capture_interval << " fps, budget "sv << budget << " bytes/frame"sv;
     }
   }
 
